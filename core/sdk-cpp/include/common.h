@@ -13,7 +13,12 @@
 // limitations under the License.
 
 #pragma once
+#if defined(__APPLE__)
+// macOS 特定的错误处理
+#include <mach/error.h>
+#else
 #include <error.h>
+#endif
 #include <getopt.h>
 #include <pthread.h>
 #include <stdint.h>

@@ -455,7 +455,7 @@ struct Task {
         for (size_t taskmeta_index = 0; taskmeta_index < total_taskmeta_num;
              ++taskmeta_index) {
           // process data
-          void* dst_ptr = fetchVarTensor.data.data() + data_length_offset;
+          void* dst_ptr = static_cast<char*>(fetchVarTensor.data.data()) + data_length_offset;
           void* source_ptr =
               outLodTensorVector[taskmeta_index][index].data.data();
           once_data_length =
@@ -825,10 +825,10 @@ class BatchTasks {
           _batch_in.push_back(paddleTensor);
         }
 
-        void* dst_ptr = _batch_in[feedvar_index].data.data() +
+        void* dst_ptr = static_cast<char*>(_batch_in[feedvar_index].data.data()) +
                         _batch_in_offset[feedvar_index];
         void* source_ptr =
-            feedVarTensor.data.data() +
+            static_cast<char*>(feedVarTensor.data.data()) +
             feedvar_bytesize * tm.feed_shape0_range[feedvar_index][0];
         size_t length =
             feedvar_max_bytes * (tm.feed_shape0_range[feedvar_index][1] -
@@ -1274,7 +1274,7 @@ class BatchTasks {
             fetchVarTensor.data = paddleBuf;
             // fetchVarTensor.data.Resize(length);
             void* dst_ptr = fetchVarTensor.data.data();
-            void* source_ptr = _batch_out[fetchvar_index].data.data() +
+            void* source_ptr = static_cast<char*>(_batch_out[fetchvar_index].data.data()) +
                                shape0_index_start * fetchvar_bytesize_index;
             memcpy(dst_ptr, source_ptr, length);
             // 由于是拆分的各个lod，不要补0，在最后合并给Task中的outVectorT_ptr时再补。
@@ -1324,7 +1324,7 @@ class BatchTasks {
 
             // fetchVarTensor.data.Resize(length);
             void* dst_ptr = fetchVarTensor.data.data();
-            void* source_ptr = _batch_out[fetchvar_index].data.data() +
+            void* source_ptr = static_cast<char*>(_batch_out[fetchvar_index].data.data()) +
                                shape0_index_start * fetchvar_bytesize_index;
             memcpy(dst_ptr, source_ptr, length);
 
@@ -1379,10 +1379,10 @@ class BatchTasks {
           paddle::PaddleTensor& fetchVarTensor =
               (*task->outVectorT_ptr)[fetchvar_index];
           void* dst_ptr =
-              fetchVarTensor.data.data() + fetchvar_bytesize_index * begin;
+              static_cast<char*>(fetchVarTensor.data.data()) + fetchvar_bytesize_index * begin;
           size_t length = fetchvar_bytesize_index * add;
           void* source_ptr =
-              _batch_out[fetchvar_index].data.data() +
+              static_cast<char*>(_batch_out[fetchvar_index].data.data()) +
               _batch_out_offset[fetchvar_index] * fetchvar_bytesize_index;
 
           memcpy(dst_ptr, source_ptr, length);

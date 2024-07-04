@@ -17,9 +17,55 @@ import os
 import time
 import json
 import platform
+from grpc_tools import protoc
 from paddle_serving_server.env import CONF_HOME
 
 
+def python_version():
+    return [int(v) for v in platform.python_version().split(".")]
+def gen_pipeline_code(package_name):
+    # pipeline service proto
+    protoc.main((
+        '',
+        '-I.',
+        '--python_out=.',
+        '--grpc_python_out=.',
+        '{}/pipeline/proto/pipeline_service.proto'.format(package_name), ))
+
+    # pipeline grpc-gateway proto
+    # *.pb.go
+    ret = os.system(
+        "cd {}/pipeline/gateway/proto/ && "
+        "../../../../../third_party/install/protobuf/bin/protoc -I. "
+        "-I$GOPATH/pkg/mod "
+        "-I$GOPATH/pkg/mod/github.com/grpc-ecosystem/grpc-gateway\@v1.15.2/third_party/googleapis "
+        "-I./include "
+        "--go_out=plugins=grpc:. "
+        "gateway.proto".format(package_name))
+    if ret != 0:
+        exit(1)
+    # *.gw.go
+    ret = os.system(
+        "cd {}/pipeline/gateway/proto/ && "
+        "../../../../../third_party/install/protobuf/bin/protoc -I. "
+        "-I$GOPATH/pkg/mod "
+        "-I$GOPATH/pkg/mod/github.com/grpc-ecosystem/grpc-gateway\@v1.15.2/third_party/googleapis "
+        "--grpc-gateway_out=logtostderr=true:. "
+        "gateway.proto".format(package_name))
+    if ret != 0:
+        exit(1)
+
+    # pipeline grpc-gateway shared-lib
+    ret = os.system("cd {}/pipeline/gateway/ && go mod init serving-gateway".
+                    format(package_name))
+    ret = os.system("cd {}/pipeline/gateway/ && go mod vendor && go mod tidy".
+                    format(package_name))
+    ret = os.system(
+        "cd {}/pipeline/gateway && "
+        "go build -buildmode=c-shared -o libproxy_server.so proxy_server.go".
+        format(package_name))
+    if ret != 0:
+        exit(1)
 def pid_is_exist(pid: int):
     '''
     Try to kill process by PID.

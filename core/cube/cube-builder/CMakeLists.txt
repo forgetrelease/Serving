@@ -12,10 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License
 
+set(CMAKE_OSX_ARCHITECTURES arm64)
+
 set(CMAKE_CXX_STANDARD 11)
 
 add_compile_options(-std=c++11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+find_package(OpenSSL REQUIRED) 
+
+message(STATUS "ssl:" ${OPENSSL_SSL_LIBRARY})
+message(STATUS "crypto:" ${OPENSSL_CRYPTO_LIBRARY})
+if (OPENSSL_FOUND)
+    include_directories (${OPENSSL_INCLUDE_DIR})
+endif()
 
 include_directories(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/include)
 include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/../)
@@ -29,12 +38,15 @@ set(DYNAMIC_LIB
     jsoncpp
     brpc
     -lcurl
-    -lssl
-    -lcrypto
     ${CURL_LIB}
+    ${OPENSSL_SSL_LIBRARY}
+    ${OPENSSL_CRYPTO_LIBRARY}
     )
 
 target_link_libraries(cube-builder ${DYNAMIC_LIB})
+ADD_DEPENDENCIES(cube-builder ssl crypto)
+
+SET_PROPERTY(TARGET ssl PROPERTY IMPORTED_LOCATION ${OPENSSL_SSL_LIBRARY})
 
 # install
 install(TARGETS cube-builder RUNTIME DESTINATION ${PADDLE_SERVING_INSTALL_DIR}/bin)

@@ -1,3 +1,5 @@
+
+set(CMAKE_OSX_ARCHITECTURES arm64)
 include(plugin/CMakeLists.txt)
 include(src/CMakeLists.txt)
 

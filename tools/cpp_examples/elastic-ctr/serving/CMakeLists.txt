@@ -23,9 +23,13 @@ add_dependencies(elastic_serving pdcodegen paddle_inference_engine pdserving pad
 target_include_directories(elastic_serving PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}/../../predictor
         )
-
-target_link_libraries(elastic_serving -Wl,--whole-archive paddle_inference_engine
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(elastic_serving -Wl,-force_load paddle_inference_engine
+            -Wl)
+else()
+    target_link_libraries(elastic_serving -Wl,--whole-archive paddle_inference_engine
         -Wl,--no-whole-archive)
+endif()
 
 target_link_libraries(elastic_serving paddle_inference ${paddle_depend_libs})
 

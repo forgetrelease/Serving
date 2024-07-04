@@ -36,7 +36,7 @@ class PredictorImpl;
 
 static const char* INFERENCE_METHOD_NAME = "inference";
 static const char* DEBUG_METHOD_NAME = "debug";
-
+/*
 class MetricScope {
  public:
   MetricScope(Stub* stub, const char* routine)
@@ -55,7 +55,7 @@ class MetricScope {
   butil::Timer _tt;
   std::string _routine;
 };
-
+*/
 class TracePackScope {
  public:
   explicit TracePackScope(const char* routine) : _routine(routine), _index(-1) {

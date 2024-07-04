@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-
+set(CMAKE_OSX_ARCHITECTURES arm64)
 include_directories(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/include)
 include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/../)
 
@@ -45,11 +45,19 @@ set(SRC_LIST src/server.cpp
 add_executable(cube ${SRC_LIST} src/main.cpp
     ${PROTO_SRC} ${PROTO_HEADER})
 
+find_package(OpenSSL REQUIRED) 
+
+message(STATUS "ssl:" ${OPENSSL_SSL_LIBRARY})
+message(STATUS "crypto:" ${OPENSSL_CRYPTO_LIBRARY})
+
+if (OPENSSL_FOUND)
+    include_directories (${OPENSSL_INCLUDE_DIR})
+endif()
+
+
 set(DYNAMIC_LIB
     protobuf
     leveldb
-    -lssl
-    -lcrypto
     )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
@@ -65,7 +73,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         "-Wl,-U,_ProfilerStop")
 endif()
 
-target_link_libraries(cube brpc ${DYNAMIC_LIB} -lpthread -ldl -lz)
+target_link_libraries(cube brpc ${DYNAMIC_LIB} -lpthread -ldl -lz ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${GLOG_LIBRARIES})
+ADD_DEPENDENCIES(cube ssl crypto)
 
 #add_executable(cube_test ${SRC_LIST} test/cube_test.cpp
 #    ${PROTO_SRC} ${PROTO_HEADER})

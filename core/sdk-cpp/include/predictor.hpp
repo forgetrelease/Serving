@@ -18,11 +18,30 @@ namespace baidu {
 namespace paddle_serving {
 namespace sdk_cpp {
 
+class MetricScope {
+ public:
+  MetricScope(Stub* stub, const char* routine)
+      : _stub(stub), _tt(butil::Timer::STARTED), _routine(routine) {
+    TRACEPRINTF("enter %s", routine);
+  }
+
+  ~MetricScope() {
+    TRACEPRINTF("exit %s", _routine.c_str());
+    _tt.stop();
+    _stub->update_latency(_tt.u_elapsed(), _routine.c_str());
+  }
+
+ private:
+  Stub* _stub;
+  butil::Timer _tt;
+  std::string _routine;
+};
+
 #ifdef BCLOUD
 namespace butil = base;
 #endif
 
-class MetricScope;
+// class MetricScope;
 class Stub;
 template <typename T, typename C, typename R, typename I, typename O>
 class StubImpl;

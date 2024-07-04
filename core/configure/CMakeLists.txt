@@ -1,3 +1,4 @@
+set(CMAKE_OSX_ARCHITECTURES arm64)
 if (SERVER OR CLIENT)
   LIST(APPEND protofiles
           ${CMAKE_CURRENT_LIST_DIR}/proto/server_configure.proto

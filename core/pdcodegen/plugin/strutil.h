@@ -43,9 +43,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // from google3/strings/strutil.h
-
+using namespace std;
 #pragma once
 #include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/strutil.h>
+#include <google/protobuf/stubs/logging.h>
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -72,12 +74,12 @@ namespace protobuf {
 //    Like above, but only accepts digits.
 // ----------------------------------------------------------------------
 
-inline bool ascii_isalnum(char c) {
-  return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
-         ('0' <= c && c <= '9');
-}
+// inline bool ascii_isalnum(char c) {
+//   return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
+//          ('0' <= c && c <= '9');
+// }
 
-inline bool ascii_isdigit(char c) { return ('0' <= c && c <= '9'); }
+// inline bool ascii_isdigit(char c) { return ('0' <= c && c <= '9'); }
 
 // ----------------------------------------------------------------------
 // HasPrefixString()
@@ -92,13 +94,13 @@ inline bool HasPrefixString(const string& str, const string& prefix) {
          str.compare(0, prefix.size(), prefix) == 0;
 }
 
-inline string StripPrefixString(const string& str, const string& prefix) {
-  if (HasPrefixString(str, prefix)) {
-    return str.substr(prefix.size());
-  } else {
-    return str;
-  }
-}
+// inline std::string StripPrefixString(const string& str, const string& prefix) {
+//   if (HasPrefixString(str, prefix)) {
+//     return str.substr(prefix.size());
+//   } else {
+//     return str;
+//   }
+// }
 
 // ----------------------------------------------------------------------
 // HasSuffixString()
@@ -113,13 +115,13 @@ inline bool HasSuffixString(const string& str, const string& suffix) {
          str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
-inline string StripSuffixString(const string& str, const string& suffix) {
-  if (HasSuffixString(str, suffix)) {
-    return str.substr(0, str.size() - suffix.size());
-  } else {
-    return str;
-  }
-}
+// inline string StripSuffixString(const string& str, const string& suffix) {
+//   if (HasSuffixString(str, suffix)) {
+//     return str.substr(0, str.size() - suffix.size());
+//   } else {
+//     return str;
+//   }
+// }
 
 // ----------------------------------------------------------------------
 // StripString
@@ -141,21 +143,21 @@ LIBPROTOBUF_EXPORT void StripString(string* s,
 //    strings.
 // ----------------------------------------------------------------------
 
-inline void LowerString(string* s) {
-  string::iterator end = s->end();
-  for (string::iterator i = s->begin(); i != end; ++i) {
-    // tolower() changes based on locale.  We don't want this!
-    if ('A' <= *i && *i <= 'Z') *i += 'a' - 'A';
-  }
-}
+// inline void LowerString(string* s) {
+//   string::iterator end = s->end();
+//   for (string::iterator i = s->begin(); i != end; ++i) {
+//     // tolower() changes based on locale.  We don't want this!
+//     if ('A' <= *i && *i <= 'Z') *i += 'a' - 'A';
+//   }
+// }
 
-inline void UpperString(string* s) {
-  string::iterator end = s->end();
-  for (string::iterator i = s->begin(); i != end; ++i) {
-    // toupper() changes based on locale.  We don't want this!
-    if ('a' <= *i && *i <= 'z') *i += 'A' - 'a';
-  }
-}
+// inline void UpperString(string* s) {
+//   string::iterator end = s->end();
+//   for (string::iterator i = s->begin(); i != end; ++i) {
+//     // toupper() changes based on locale.  We don't want this!
+//     if ('a' <= *i && *i <= 'z') *i += 'A' - 'a';
+//   }
+// }
 
 // ----------------------------------------------------------------------
 // StringReplace()
@@ -192,11 +194,11 @@ LIBPROTOBUF_EXPORT void JoinStrings(const vector<string>& components,
                                     const char* delim,
                                     string* result);
 
-inline string JoinStrings(const vector<string>& components, const char* delim) {
-  string result;
-  JoinStrings(components, delim, &result);
-  return result;
-}
+// inline string JoinStrings(const vector<string>& components, const char* delim) {
+//   string result;
+//   JoinStrings(components, delim, &result);
+//   return result;
+// }
 
 // ----------------------------------------------------------------------
 // UnescapeCEscapeSequences()
@@ -304,33 +306,33 @@ LIBPROTOBUF_EXPORT uint32 strtou32_adaptor(const char* nptr,
                                            char** endptr,
                                            int base);
 
-inline int32 strto32(const char* nptr, char** endptr, int base) {
-  if (sizeof(int32) == sizeof(long))  // NOLINT
-    return strtol(nptr, endptr, base);
-  else
-    return strto32_adaptor(nptr, endptr, base);
-}
+// inline int32 strto32(const char* nptr, char** endptr, int base) {
+//   if (sizeof(int32) == sizeof(long))  // NOLINT
+//     return strtol(nptr, endptr, base);
+//   else
+//     return strto32_adaptor(nptr, endptr, base);
+// }
 
-inline uint32 strtou32(const char* nptr, char** endptr, int base) {
-  if (sizeof(uint32) == sizeof(unsigned long))  // NOLINT
-    return strtoul(nptr, endptr, base);
-  else
-    return strtou32_adaptor(nptr, endptr, base);
-}
+// inline uint32 strtou32(const char* nptr, char** endptr, int base) {
+//   if (sizeof(uint32) == sizeof(unsigned long))  // NOLINT
+//     return strtoul(nptr, endptr, base);
+//   else
+//     return strtou32_adaptor(nptr, endptr, base);
+// }
 
 // For now, long long is 64-bit on all the platforms we care about, so these
 // functions can simply pass the call to strto[u]ll.
-inline int64 strto64(const char* nptr, char** endptr, int base) {
-  GOOGLE_COMPILE_ASSERT(sizeof(int64) == sizeof(long long),  // NOLINT
-                        sizeof_int64_is_not_sizeof_long_long);
-  return strtoll(nptr, endptr, base);
-}
+// inline int64 strto64(const char* nptr, char** endptr, int base) {
+//   GOOGLE_COMPILE_ASSERT(sizeof(int64) == sizeof(long long),  // NOLINT
+//                         sizeof_int64_is_not_sizeof_long_long);
+//   return strtoll(nptr, endptr, base);
+// }
 
-inline uint64 strtou64(const char* nptr, char** endptr, int base) {
-  GOOGLE_COMPILE_ASSERT(sizeof(uint64) == sizeof(unsigned long long),  // NOLINT
-                        sizeof_uint64_is_not_sizeof_long_long);
-  return strtoull(nptr, endptr, base);
-}
+// inline uint64 strtou64(const char* nptr, char** endptr, int base) {
+//   GOOGLE_COMPILE_ASSERT(sizeof(uint64) == sizeof(unsigned long long),  // NOLINT
+//                         sizeof_uint64_is_not_sizeof_long_long);
+//   return strtoull(nptr, endptr, base);
+// }
 
 // ----------------------------------------------------------------------
 // FastIntToBuffer()
@@ -356,7 +358,7 @@ inline uint64 strtou64(const char* nptr, char** endptr, int base) {
 
 // Suggested buffer size for FastToBuffer functions.  Also works with
 // DoubleToBuffer() and FloatToBuffer().
-static const int kFastToBufferSize = 32;
+// static const int kFastToBufferSize = 32;
 
 LIBPROTOBUF_EXPORT char* FastInt32ToBuffer(int32 i, char* buffer);
 LIBPROTOBUF_EXPORT char* FastInt64ToBuffer(int64 i, char* buffer);
@@ -367,22 +369,22 @@ LIBPROTOBUF_EXPORT char* FastHex64ToBuffer(uint64 i, char* buffer);
 LIBPROTOBUF_EXPORT char* FastHex32ToBuffer(uint32 i, char* buffer);
 
 // at least 22 bytes long
-inline char* FastIntToBuffer(int i, char* buffer) {
-  return (sizeof(i) == 4 ? FastInt32ToBuffer(i, buffer)
-                         : FastInt64ToBuffer(i, buffer));
-}
-inline char* FastUIntToBuffer(unsigned int i, char* buffer) {
-  return (sizeof(i) == 4 ? FastUInt32ToBuffer(i, buffer)
-                         : FastUInt64ToBuffer(i, buffer));
-}
-inline char* FastLongToBuffer(long i, char* buffer) {  // NOLINT
-  return (sizeof(i) == 4 ? FastInt32ToBuffer(i, buffer)
-                         : FastInt64ToBuffer(i, buffer));
-}
-inline char* FastULongToBuffer(unsigned long i, char* buffer) {  // NOLINT
-  return (sizeof(i) == 4 ? FastUInt32ToBuffer(i, buffer)
-                         : FastUInt64ToBuffer(i, buffer));
-}
+// inline char* FastIntToBuffer(int i, char* buffer) {
+//   return (sizeof(i) == 4 ? FastInt32ToBuffer(i, buffer)
+//                          : FastInt64ToBuffer(i, buffer));
+// }
+// inline char* FastUIntToBuffer(unsigned int i, char* buffer) {
+//   return (sizeof(i) == 4 ? FastUInt32ToBuffer(i, buffer)
+//                          : FastUInt64ToBuffer(i, buffer));
+// }
+// inline char* FastLongToBuffer(long i, char* buffer) {  // NOLINT
+//   return (sizeof(i) == 4 ? FastInt32ToBuffer(i, buffer)
+//                          : FastInt64ToBuffer(i, buffer));
+// }
+// inline char* FastULongToBuffer(unsigned long i, char* buffer) {  // NOLINT
+//   return (sizeof(i) == 4 ? FastUInt32ToBuffer(i, buffer)
+//                          : FastUInt64ToBuffer(i, buffer));
+// }
 
 // ----------------------------------------------------------------------
 // FastInt32ToBufferLeft()
@@ -406,14 +408,14 @@ LIBPROTOBUF_EXPORT char* FastInt64ToBufferLeft(int64 i, char* buffer);
 LIBPROTOBUF_EXPORT char* FastUInt64ToBufferLeft(uint64 i, char* buffer);
 
 // Just define these in terms of the above.
-inline char* FastUInt32ToBuffer(uint32 i, char* buffer) {
-  FastUInt32ToBufferLeft(i, buffer);
-  return buffer;
-}
-inline char* FastUInt64ToBuffer(uint64 i, char* buffer) {
-  FastUInt64ToBufferLeft(i, buffer);
-  return buffer;
-}
+// inline char* FastUInt32ToBuffer(uint32 i, char* buffer) {
+//   FastUInt32ToBufferLeft(i, buffer);
+//   return buffer;
+// }
+// inline char* FastUInt64ToBuffer(uint64 i, char* buffer) {
+//   FastUInt64ToBufferLeft(i, buffer);
+//   return buffer;
+// }
 
 // ----------------------------------------------------------------------
 // SimpleItoa()
@@ -456,8 +458,8 @@ LIBPROTOBUF_EXPORT char* FloatToBuffer(float i, char* buffer);
 // In practice, doubles should never need more than 24 bytes and floats
 // should never need more than 14 (including null terminators), but we
 // overestimate to be safe.
-static const int kDoubleToBufferSize = 32;
-static const int kFloatToBufferSize = 24;
+// static const int kDoubleToBufferSize = 32;
+// static const int kFloatToBufferSize = 24;
 
 // ----------------------------------------------------------------------
 // NoLocaleStrtod()

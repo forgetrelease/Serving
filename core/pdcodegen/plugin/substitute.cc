@@ -91,7 +91,7 @@ string Substitute(const char* format,
                       arg9);
   return result;
 }
-
+/*
 void SubstituteAndAppend(string* output,
                          const char* format,
                          const SubstituteArg& arg0,
@@ -169,6 +169,7 @@ void SubstituteAndAppend(string* output,
 
   GOOGLE_DCHECK_EQ(target - output->data(), output->size());
 }
+*/
 
 }  // namespace strings
 }  // namespace protobuf

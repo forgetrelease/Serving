@@ -1,5 +1,8 @@
 if (CLIENT)
-  file(INSTALL pipeline DESTINATION paddle_serving_client)
+  file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/paddle_serving_client
+     DESTINATION ${PADDLE_SERVING_BINARY_DIR}/python)
+  file(COPY pipeline DESTINATION paddle_serving_client)
+  #file(INSTALL pipeline DESTINATION paddle_serving_client)
   file(GLOB_RECURSE SERVING_CLIENT_PY_FILES paddle_serving_client/*.py)
   set(PY_FILES ${SERVING_CLIENT_PY_FILES})
   SET(PACKAGE_NAME "serving_client")
@@ -17,7 +20,10 @@ if (SERVER)
   elseif(WITH_ASCEND_CL)
     set(SERVER_PACKAGE_NAME "paddle-serving-server-npu")
   endif()
-  file(INSTALL pipeline DESTINATION paddle_serving_server)
+  file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/paddle_serving_server
+     DESTINATION ${PADDLE_SERVING_BINARY_DIR}/python)
+  file(COPY pipeline DESTINATION paddle_serving_server)
+  #file(INSTALL pipeline DESTINATION paddle_serving_server)
   file(GLOB_RECURSE SERVING_SERVER_PY_FILES paddle_serving_server/*.py)
   set(PY_FILES ${SERVING_SERVER_PY_FILES})
   set(SETUP_LOG_FILE "setup.py.server.log")
@@ -91,10 +97,7 @@ if (SERVER)
   endif()
   add_custom_command(
     OUTPUT ${PADDLE_SERVING_BINARY_DIR}/.timestamp
-    COMMAND cp -r
-    ${CMAKE_CURRENT_SOURCE_DIR}/paddle_serving_server/ ${PADDLE_SERVING_BINARY_DIR}/python/
-    COMMAND env ${py_env} ${PYTHON_EXECUTABLE} gen_version.py
-    "server" ${VERSION_SUFFIX}
+    COMMAND env ${py_env} ${PYTHON_EXECUTABLE} gen_version.py "server" ${VERSION_SUFFIX}
     COMMAND env ${py_env} ${PYTHON_EXECUTABLE} setup.py bdist_wheel
     DEPENDS ${SERVING_SERVER_CORE} server_config_py_proto ${PY_FILES})
   add_custom_target(paddle_python ALL DEPENDS ${PADDLE_SERVING_BINARY_DIR}/.timestamp)

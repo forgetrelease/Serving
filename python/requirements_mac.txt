@@ -1,5 +1,5 @@
 numpy>=1.12, <=1.16.4 ; python_version<"3.5"
-shapely==1.8.0
+shapely
 wheel>=0.34.0, <0.35.0
 setuptools>=44.1.0
 google>=2.0.3
@@ -13,7 +13,7 @@ Jinja2==2.11.3
 MarkupSafe==1.1.1
 Werkzeug==1.0.1
 ujson>=2.0.3
-grpcio-tools==1.33.2
+grpcio-tools
 grpcio>=1.33.2
 sentencepiece==0.1.96; platform_machine !=  "aarch64"
 sentencepiece; platform_machine ==  "aarch64"

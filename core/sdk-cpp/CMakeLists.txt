@@ -1,4 +1,5 @@
 
+set(CMAKE_OSX_ARCHITECTURES arm64)
 include(src/CMakeLists.txt)
 include(proto/CMakeLists.txt)
 add_library(sdk-cpp ${sdk_cpp_srcs})

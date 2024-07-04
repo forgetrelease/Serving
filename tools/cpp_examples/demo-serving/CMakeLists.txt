@@ -51,12 +51,21 @@ target_include_directories(serving PUBLIC
         )
 
 if(WITH_GPU)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(serving -Wl,-force_load paddle_inference_engine
+            -Wl)
+else()
     target_link_libraries(serving -Wl,--whole-archive paddle_inference_engine
             -Wl,--no-whole-archive)
 endif()
-
-target_link_libraries(serving -Wl,--whole-archive paddle_inference_engine
+endif()
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(serving -Wl,-force_load paddle_inference_engine
+            -Wl)
+else()
+    target_link_libraries(serving -Wl,--whole-archive paddle_inference_engine
         -Wl,--no-whole-archive)
+endif()
 
 target_link_libraries(serving paddle_inference ${paddle_depend_libs})
 

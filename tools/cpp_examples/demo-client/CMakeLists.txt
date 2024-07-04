@@ -16,61 +16,127 @@ if (NOT EXISTS
 endif()
 
 add_executable(ximage ${CMAKE_CURRENT_LIST_DIR}/src/ximage.cpp)
-target_link_libraries(ximage -Wl,--whole-archive sdk-cpp
-               -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
-        -lz)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(ximage -Wl,-force_load sdk-cpp
+                   -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(ximage -Wl,--whole-archive sdk-cpp
+                   -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+endif()
 
 add_executable(ximage_press ${CMAKE_CURRENT_LIST_DIR}/src/ximage_press.cpp)
-target_link_libraries(ximage_press -Wl,--whole-archive sdk-cpp
-               -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
-        -lz)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(ximage_press -Wl,-force_load sdk-cpp
+                   -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(ximage_press -Wl,--whole-archive sdk-cpp
+                   -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+endif()
 
 add_executable(load_general_model ${CMAKE_CURRENT_LIST_DIR}/src/load_general_model.cpp)
-target_link_libraries(load_general_model -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive
-        -lpthread -lcrypto -lm -lrt -lssl -ldl
-        -lz)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(load_general_model -Wl,-force_load sdk-cpp -Wl,
+            -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(load_general_model -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive
+            -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+endif()
 
 add_executable(echo ${CMAKE_CURRENT_LIST_DIR}/src/echo.cpp)
-target_link_libraries(echo -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive
-        -lpthread -lcrypto -lm -lrt -lssl -ldl
-        -lz)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(echo -Wl,-force_load sdk-cpp -Wl,
+            -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(echo -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive
+            -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+endif()
 
 add_executable(echo_kvdb ${CMAKE_CURRENT_LIST_DIR}/src/echo_kvdb.cpp)
-target_link_libraries(echo_kvdb -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(echo_kvdb -Wl,-force_load sdk-cpp -Wl,
+            -lpthread -lcrypto -lm -lrt -lssl -ldl
+             -lz)
+else()
+    target_link_libraries(echo_kvdb -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive
         -lpthread -lcrypto -lm -lrt -lssl -ldl
          -lz)
+endif)_
 
 add_executable(dense_format ${CMAKE_CURRENT_LIST_DIR}/src/dense_format.cpp)
-target_link_libraries(dense_format -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(dense_format -Wl,-force_load sdk-cpp -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(dense_format -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
         -lz)
+endif()
 
 add_executable(sparse_format ${CMAKE_CURRENT_LIST_DIR}/src/sparse_format.cpp)
-target_link_libraries(sparse_format -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(sparse_format -Wl,-force_load sdk-cpp -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(sparse_format -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
         -lz)
+endif()
 
 add_executable(int64tensor_format ${CMAKE_CURRENT_LIST_DIR}/src/int64tensor_format.cpp)
-target_link_libraries(int64tensor_format -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(int64tensor_format -Wl,-force_load sdk-cpp -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(int64tensor_format -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
         -lz)
+endif()
 
 add_executable(text_classification
         ${CMAKE_CURRENT_LIST_DIR}/src/text_classification.cpp)
-target_link_libraries(text_classification -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(text_classification -Wl,-force_load sdk-cpp -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(text_classification -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
         -lz)
+endif()
 
 add_executable(text_classification_press
         ${CMAKE_CURRENT_LIST_DIR}/src/text_classification_press.cpp)
-target_link_libraries(text_classification_press -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(text_classification_press -Wl,-force_load sdk-cpp -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl
+            -lz)
+else()
+    target_link_libraries(text_classification_press -Wl,--whole-archive sdk-cpp -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl
         -lz)
+endif()
 
 add_executable(ctr_prediction
         ${CMAKE_CURRENT_LIST_DIR}/src/ctr_prediction.cpp)
-target_link_libraries(ctr_prediction -Wl,--whole-archive sdk-cpp
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(ctr_prediction -Wl,-force_load sdk-cpp
+            -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl -lz)
+else()
+    target_link_libraries(ctr_prediction -Wl,--whole-archive sdk-cpp
         -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl -lz)
+endif()
 
 add_executable(bert
     ${CMAKE_CURRENT_LIST_DIR}/src/bert_service.cpp)
-target_link_libraries(bert -Wl,--whole-archive sdk-cpp 
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(bert -Wl,-force_load sdk-cpp 
+        -Wl, -lpthread -lcrypto -lm -lrt -lssl -ldl -lz)
+else()
+    target_link_libraries(bert -Wl,--whole-archive sdk-cpp 
     -Wl,--no-whole-archive -lpthread -lcrypto -lm -lrt -lssl -ldl -lz)
+endif()
     
 # install
 install(TARGETS ximage

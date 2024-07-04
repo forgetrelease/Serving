@@ -1,3 +1,4 @@
+set(CMAKE_OSX_ARCHITECTURES arm64)
 include(proto/CMakeLists.txt)
 include(common/CMakeLists.txt)
 include(op/CMakeLists.txt)
@@ -16,8 +17,13 @@ add_dependencies(pdserving protobuf boost brpc leveldb pdcodegen configure exter
 if (WITH_TRT)
     add_definitions(-DWITH_TRT)
 endif()
-target_link_libraries(pdserving
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(pdserving
+            brpc protobuf boost leveldb configure -lpthread -lm -ldl -lz paddle_inference ${paddle_depend_libs} prometheus ${prometheus_libs})
+else()
+    target_link_libraries(pdserving
         brpc protobuf boost leveldb configure -lpthread -lcrypto -lm -lrt -lssl -ldl -lz paddle_inference ${paddle_depend_libs} prometheus ${prometheus_libs})
+endif()
 # install
 install(TARGETS pdserving
         RUNTIME DESTINATION ${PADDLE_SERVING_INSTALL_DIR}/bin

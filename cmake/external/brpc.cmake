@@ -24,6 +24,11 @@ message(STATUS "crypto:" ${OPENSSL_CRYPTO_LIBRARY})
 
 ADD_LIBRARY(ssl SHARED IMPORTED GLOBAL)
 SET_PROPERTY(TARGET ssl PROPERTY IMPORTED_LOCATION ${OPENSSL_SSL_LIBRARY})
+if (OPENSSL_FOUND)
+    include_directories (${OPENSSL_INCLUDE_DIR})
+endif()
+
+
 
 ADD_LIBRARY(crypto SHARED IMPORTED GLOBAL)
 SET_PROPERTY(TARGET crypto PROPERTY IMPORTED_LOCATION ${OPENSSL_CRYPTO_LIBRARY})
@@ -40,10 +45,10 @@ set(prefix_path "${THIRD_PARTY_PATH}/install/gflags|${THIRD_PARTY_PATH}/install/
 
 if(WITH_LITE)
     set(BRPC_REPO "https://github.com/apache/incubator-brpc")
-    set(BRPC_TAG "1.0.0-rc01")
+    set(BRPC_TAG "1.9.0")
 else()
     set(BRPC_REPO "https://github.com/apache/incubator-brpc")
-    set(BRPC_TAG "1.0.0-rc01")
+    set(BRPC_TAG "1.9.0")
 endif()
 
 # If minimal .a is need, you can set  WITH_DEBUG_SYMBOLS=OFF

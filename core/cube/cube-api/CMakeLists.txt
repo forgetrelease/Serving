@@ -16,13 +16,23 @@ protobuf_generate_cpp(PROTO_SRC PROTO_HEADER idl/cube.proto idl/control.proto)
 # include PROTO_HEADER
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/core)
 
+find_package(OpenSSL REQUIRED) 
+
+message(STATUS "ssl:" ${OPENSSL_SSL_LIBRARY})
+message(STATUS "crypto:" ${OPENSSL_CRYPTO_LIBRARY})
+if (OPENSSL_FOUND)
+    include_directories (${OPENSSL_INCLUDE_DIR})
+endif()
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     include(CheckFunctionExists)
     CHECK_FUNCTION_EXISTS(clock_gettime HAVE_CLOCK_GETTIME)
     if(NOT HAVE_CLOCK_GETTIME)
         set(DEFINE_CLOCK_GETTIME "-DNO_CLOCK_GETTIME_IN_MAC")
     endif()
+    
 endif()
+set(CMAKE_OSX_ARCHITECTURES arm64)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CPP_FLAGS} -DNDEBUG -O2 -D__const__= -pipe -W -Wall -Wno-unused-parameter -fPIC -fno-omit-frame-pointer")
 
@@ -48,8 +58,6 @@ set(DYNAMIC_LIB
     gflags
     protobuf
     leveldb
-    -lssl
-    -lcrypto
     )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
@@ -65,8 +73,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         "-Wl,-U,_ProfilerStop")
 endif()
 
-target_link_libraries(cube-cli brpc ${DYNAMIC_LIB} -lpthread -ldl -lz)
+target_link_libraries(cube-cli brpc ${DYNAMIC_LIB} brpc -lpthread -ldl -lz ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
 target_link_libraries(cube-api ${DYNAMIC_LIB} brpc -lpthread -ldl -lz)
+ADD_DEPENDENCIES(cube-cli ssl crypto)
 
 # install
 install(TARGETS cube-api
